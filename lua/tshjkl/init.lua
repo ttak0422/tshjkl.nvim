@@ -26,6 +26,7 @@ local M = {}
 ---@field keymaps TshjklKeymaps
 ---@field marks TshjklMarks
 ---@field binds? Binds
+---@field ts_error_handler? fun(err_msg: string)
 
 ---@type TshjklConfig
 local default_config = {
@@ -68,6 +69,9 @@ local default_config = {
     bind('q', function()
       tshjkl.exit(true)
     end)
+  end,
+  ts_error_handler = function(err_msg)
+    vim.notify(err_msg, vim.log.levels.ERROR)
   end,
 }
 
@@ -420,7 +424,7 @@ end
 
 ---@param outermost boolean
 local function enter(outermost)
-  local t = trail.start()
+  local t = trail.start({ ts_error_handler = M.opts.ts_error_handler })
   if t == nil then
     return
   end

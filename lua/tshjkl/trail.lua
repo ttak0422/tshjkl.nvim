@@ -16,10 +16,14 @@ local M = {}
 ---@field move_outermost fun(): TSNode | nil
 ---@field set_current_node fun(tsnode: TSNode) : nil
 
+---@class TrailOpts
+---@field ts_error_handler fun(err_msg: string)
+
+---@prams opts
 ---@return Trail | nil
-function M.start()
-  local start_node = vim.treesitter.get_node()
-  if start_node == nil then
+function M.start(opts)
+  local ok, start_node = xpcall(vim.treesitter.get_node, opts.ts_error_handler)
+  if not ok then
     return
   end
 
